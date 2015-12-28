@@ -200,7 +200,7 @@ boolean htrOn = false; // heater on or off, controlled by coolCycleOn and defros
 /**********************************************************************************************************************/
 const int rg1 = 1000;
 //const int rgFiveMin = 300000;
-const int rgFiveMin = 30000;
+const int rgFiveMin = 30000;  //running every 30 seconds for testing
 int previousRG1 = rg1;
 int previousRGFiveMin = rgFiveMin;
 
