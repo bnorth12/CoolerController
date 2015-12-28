@@ -23,6 +23,9 @@ version 0.0.1
 - heat the themastat probe on the A/C to force it to run to a temp controlled by the processor.
 - A temp probe is inserted into the fins to detect if the fins are freezing up.
 - If temperatures below 32 degrees are detected at the fins the thermostat heater shuts off to allow the A/C tp defrost.
+-
+- I borrowed the idea for the power resitor heater from the ColdSnap Project, http://people.umass.edu/~dac/projects/ColdSnap/ColdSnap.html
+
 
 
 # To Do List (pull requests are very welcomed)
