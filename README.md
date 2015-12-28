@@ -27,7 +27,7 @@ version 0.0.1
 
 # To Do List (pull requests are very welcomed)
 - Save settings to eeprom when modified from Cooler Settings page
-- 
+- Finish Fritzing Layout
 - 
 
 
