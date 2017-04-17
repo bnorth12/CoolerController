@@ -4,6 +4,7 @@ void handleParameters() {
   server.sendHeader("Cache-Control", "no-cache, no-store, must-revalidate");
   server.sendHeader("Pragma", "no-cache");
   server.sendHeader("Expires", "-1");
+  server.setContentLength(CONTENT_LENGTH_UNKNOWN);
   server.send(200, "text/html", ""); // Empty content inhibits Content-length header so we have to close the socket ourselves.
   server.sendContent(
     "<html><head></head><body>"
@@ -56,6 +57,7 @@ void handleParaSave() {
   server.sendHeader("Cache-Control", "no-cache, no-store, must-revalidate");
   server.sendHeader("Pragma", "no-cache");
   server.sendHeader("Expires", "-1");
+  server.setContentLength(CONTENT_LENGTH_UNKNOWN);
   server.send ( 302, "text/plain", "");  // Empty content inhibits Content-length header so we have to close the socket ourselves.
   server.client().stop(); // Stop is needed because we sent no content length
   saveSettings(); // does not save settings to eeprom yet
