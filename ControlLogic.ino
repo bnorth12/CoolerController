@@ -15,9 +15,9 @@ void requestTemps() {  //check the temps for the three probes
  */
 /**********************************************************************************************************************/
 void setTemps() {
-  htrTemp = setTempValues(htrProbe); // Heater Temperature equal to current value
-  finTemp = setTempValues(finProbe); // Room Temperature equal to current value
-  rmTemp =   setTempValues(rmProbe); // Room Temperature equal to current value
+  htrTemp = setTempValues(htrProbe, htrTemp); // Heater Temperature
+  finTemp = setTempValues(finProbe, finTemp); // Fin Temperature
+  rmTemp  = setTempValues(rmProbe,  rmTemp);  // Room Temperature
 } // end setTemps
 
 /**********************************************************************************************************************/
@@ -25,20 +25,18 @@ void setTemps() {
  * setTempValues retreives values from probes and stores temps in variables.
  */
 /**********************************************************************************************************************/
-int setTempValues(DeviceAddress deviceAddress) {
+int setTempValues(DeviceAddress deviceAddress, byte lastValue) {
 
-  byte tempF = 0;
   float tempC = sensors.getTempC(deviceAddress);
 
   if (tempC == -127.00) // Measurement failed or no device found
   {
     debugln("Temperature Error");
-    return 0; // Return 0 on sensor error to avoid undefined behaviour
+    return lastValue; // Retain last known good reading to avoid spurious control actions
   }
   else
   {
-    tempF = DallasTemperature::toFahrenheit(tempC); // Convert to F
-    return tempF;
+    return (byte)DallasTemperature::toFahrenheit(tempC); // Convert to F
   }
 
 } //end setTempValues

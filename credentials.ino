@@ -35,7 +35,7 @@ void saveCredentials() {
 //   Byte 5: htrDeadBand
 //   Byte 6: htrPWMhigh
 //   Byte 7: htrPWMlow
-//   Bytes 8-9: sentinel "OK"
+//   Bytes 8-10: sentinel "OK" (3 bytes including null terminator)
 #define SETTINGS_EEPROM_OFFSET 100
 
 /** Retrieve the values for the cooler from the EEPROM **/
