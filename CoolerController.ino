@@ -45,80 +45,41 @@
 #include "Adafruit_MQTT.h"
 #include "Adafruit_MQTT_Client.h"
 
-// WiFi parameters
-#define WLAN_SSID       "your ssid"
-#define WLAN_PASS       "you network password"
+// Credentials — copy secrets.h.example to secrets.h and fill in your values.
+// secrets.h is excluded from version control via .gitignore.
+#include "secrets.h"
 
-// Set Pin Number for one wire bus
-#define ONE_WIRE_BUS_PIN 12    // GPIO12 
-
-// Adafruit IO
-#define AIO_SERVER      "io.adafruit.com"
-#define AIO_SERVERPORT  1883
-#define AIO_USERNAME    "your user name"
-#define AIO_KEY         "your AIO Key"
+// Pin assignments
+#define ONE_WIRE_BUS_PIN  12  // GPIO12 — Dallas OneWire bus
+#define HTR_PIN1           5  // GPIO5  — Heater output 1
+#define HTR_PIN2           4  // GPIO4  — Heater output 2
+#define DOOR_PIN          10  // GPIO10 — Door sensor input
 
 // Create an ESP8266 WiFiClient class to connect to the MQTT server.
 WiFiClient client;
 
-// Store the MQTT server, client ID, username, and password in flash memory.
-const char MQTT_SERVER[] PROGMEM    = AIO_SERVER;
-
 // Set a unique MQTT client ID using the AIO key + the date and time the sketch
 // was compiled (so this should be unique across multiple devices for a user,
 // alternatively you can manually set this to a GUID or other random value).
-const char MQTT_CLIENTID[] PROGMEM  = AIO_KEY __DATE__ __TIME__;
-const char MQTT_USERNAME[] PROGMEM  = AIO_USERNAME;
-const char MQTT_PASSWORD[] PROGMEM  = AIO_KEY;
+const char MQTT_CLIENTID[] = AIO_KEY __DATE__ __TIME__;
 
 // Setup the MQTT client class by passing in the WiFi client and MQTT server and login details.
-Adafruit_MQTT_Client mqtt(&client, MQTT_SERVER, AIO_SERVERPORT, MQTT_CLIENTID, MQTT_USERNAME, MQTT_PASSWORD);
+Adafruit_MQTT_Client mqtt(&client, AIO_SERVER, AIO_SERVERPORT, MQTT_CLIENTID, AIO_USERNAME, AIO_KEY);
 
 
 //****************************** Feeds ***************************************
-// Create and Correct feeds for Cooler Controller
-const char LIGHTMETER_FEED[] PROGMEM = AIO_USERNAME "/feeds/lightmeter";
-Adafruit_MQTT_Publish lightmeter = Adafruit_MQTT_Publish(&mqtt, LIGHTMETER_FEED);
-
-// Setup feeds for heatertemp htrTemp
- const char HEATERTEMP_FEED[] PROGMEM = AIO_USERNAME "/feeds/heatertemp";
- Adafruit_MQTT_Publish heatertemp = Adafruit_MQTT_Publish(&mqtt, HEATERTEMP_FEED);
-
-// Setup feeds for heatersettemp   htrTmpSetPT
- const char HEATERSETTEMP_FEED[] PROGMEM = AIO_USERNAME "/feeds/heatersettemp";
- Adafruit_MQTT_Publish heatersettemp = Adafruit_MQTT_Publish(&mqtt, HEATERSETTEMP_FEED);
-
-// Setup feeds for heaterpwm  htrPWM
- const char HEATERPWM_FEED[] PROGMEM = AIO_USERNAME "/feeds/heaterpwm";
- Adafruit_MQTT_Publish heaterpwm = Adafruit_MQTT_Publish(&mqtt, HEATERPWM_FEED);
-
-// Setup feeds for heatermaxtemp atMaxHtrTmp
- const char HEATERMAXTEMP_FEED[] PROGMEM = AIO_USERNAME "/feeds/heatermaxtemp";
- Adafruit_MQTT_Publish heatermaxtemp = Adafruit_MQTT_Publish(&mqtt, HEATERMAXTEMP_FEED);
-
-// Setup feeds for fintemp   finTemp
- const char FINTEMP_FEED[] PROGMEM = AIO_USERNAME "/feeds/fintemp";
- Adafruit_MQTT_Publish fintemp = Adafruit_MQTT_Publish(&mqtt, FINTEMP_FEED);
-
-// Setup feeds for finsettemp fimTmpSetPt
- const char FINSETTEMP_FEED[] PROGMEM = AIO_USERNAME "/feeds/finsettemp";
- Adafruit_MQTT_Publish finsettemp = Adafruit_MQTT_Publish(&mqtt, FINSETTEMP_FEED);
-
-// Setup feeds for defrostcycle defrostCycleOn
- const char DEFROSTCYCLE_FEED[] PROGMEM = AIO_USERNAME "/feeds/defrostcycle";
- Adafruit_MQTT_Publish defrostcycle = Adafruit_MQTT_Publish(&mqtt, DEFROSTCYCLE_FEED);
-
-// Setup feeds for coolertemp rmTemp
- const char COOLERTEMP_FEED[] PROGMEM = AIO_USERNAME "/feeds/coolertemp";
- Adafruit_MQTT_Publish coolertemp = Adafruit_MQTT_Publish(&mqtt, COOLERTEMP_FEED);
-
-// Setup feeds for coolersetpoint rmTmpSetPt
- const char COOLERSETPOINT_FEED[] PROGMEM = AIO_USERNAME "/feeds/coolersetpoint";
- Adafruit_MQTT_Publish coolersetpoint = Adafruit_MQTT_Publish(&mqtt, COOLERSETPOINT_FEED);
-
-// Setup feeds for coolcycle coolCycleOn
- const char COOLCYCLE_FEED[] PROGMEM = AIO_USERNAME "/feeds/coolcycle";
- Adafruit_MQTT_Publish coolcycle = Adafruit_MQTT_Publish(&mqtt, COOLCYCLE_FEED);
+// Create feeds for Cooler Controller
+Adafruit_MQTT_Publish lightmeter    = Adafruit_MQTT_Publish(&mqtt, AIO_USERNAME "/feeds/lightmeter");
+Adafruit_MQTT_Publish heatertemp    = Adafruit_MQTT_Publish(&mqtt, AIO_USERNAME "/feeds/heatertemp");
+Adafruit_MQTT_Publish heatersettemp = Adafruit_MQTT_Publish(&mqtt, AIO_USERNAME "/feeds/heatersettemp");
+Adafruit_MQTT_Publish heaterpwm     = Adafruit_MQTT_Publish(&mqtt, AIO_USERNAME "/feeds/heaterpwm");
+Adafruit_MQTT_Publish heatermaxtemp = Adafruit_MQTT_Publish(&mqtt, AIO_USERNAME "/feeds/heatermaxtemp");
+Adafruit_MQTT_Publish fintemp       = Adafruit_MQTT_Publish(&mqtt, AIO_USERNAME "/feeds/fintemp");
+Adafruit_MQTT_Publish finsettemp    = Adafruit_MQTT_Publish(&mqtt, AIO_USERNAME "/feeds/finsettemp");
+Adafruit_MQTT_Publish defrostcycle  = Adafruit_MQTT_Publish(&mqtt, AIO_USERNAME "/feeds/defrostcycle");
+Adafruit_MQTT_Publish coolertemp    = Adafruit_MQTT_Publish(&mqtt, AIO_USERNAME "/feeds/coolertemp");
+Adafruit_MQTT_Publish coolersetpoint = Adafruit_MQTT_Publish(&mqtt, AIO_USERNAME "/feeds/coolersetpoint");
+Adafruit_MQTT_Publish coolcycle     = Adafruit_MQTT_Publish(&mqtt, AIO_USERNAME "/feeds/coolcycle");
 
 
 /*-----( Declare objects )-----*/
@@ -168,18 +129,11 @@ long lastConnectTry = 0;
 int status = WL_IDLE_STATUS;
 
 
-// Global Variables TODO: eliminate  as many Globals as possible. Initial Coding is a Proof on Conecept implementation
+// Global Variables
 
-// TODO: Change pin assignments to #define rather than declaration
-byte wirePin = 4;  // Pin used for Sensors
-//#define wirePin #
-byte  htrPin1 = 5; // Pin Connected to Heater1
-byte  htrPin2 = 4; // Pin Connected to Heater2
-//#define doorPin #
-byte doorPin = 10; // input used with door sensor
-byte htrPWM = 128; //Pulse Width Modulation Value for setting Heater Temperature Inital vale ~50% duty Factor
-byte htrPMWhigh = 128; //
-byte htrPMWlow = 10; //
+byte htrPWM = 128; //Pulse Width Modulation Value for setting Heater Temperature Initial value ~50% duty factor
+byte htrPWMhigh = 128; // High duty-cycle PWM value when cooling is active
+byte htrPWMlow = 10;  // Low duty-cycle PWM value for standby / defrost
 byte rmTemp = 80; // Room Temperature
 byte finTemp = 35; // Fin Temperature
 byte htrTemp = 72; // Heater Temperature
@@ -196,13 +150,12 @@ boolean htrOn = false; // heater on or off, controlled by coolCycleOn and defros
 
 
 /**********************************************************************************************************************/
-//Variables for no delay processing TODO: eliminate globals
+//Variables for no delay processing
 /**********************************************************************************************************************/
-const int rg1 = 1000;
-//const int rgFiveMin = 300000;
-const int rgFiveMin = 30000;  //running every 30 seconds for testing
-int previousRG1 = rg1;
-int previousRGFiveMin = rgFiveMin;
+const unsigned long rg1 = 1000;
+const unsigned long rgFiveMin = 30000;  // 30 seconds for testing (change to 300000 for 5-minute production interval)
+unsigned long previousRG1 = 0;
+unsigned long previousRGFiveMin = 0;
 
 /**********************************************************************************************************************/
 //Setup Function
@@ -255,8 +208,8 @@ void setup() {
   sensors.setResolution(htrProbe, 10);
 
   // Set Heater Pin as output
-  pinMode(htrPin1, OUTPUT);
-  pinMode(htrPin2, OUTPUT);
+  pinMode(HTR_PIN1, OUTPUT);
+  pinMode(HTR_PIN2, OUTPUT);
 
   loadSettings(); // Load the Settings for the Cooler from EEPROM
   if (fimTmpSetPt == 0) {

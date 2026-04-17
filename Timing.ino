@@ -1,7 +1,6 @@
 void timing() {
-  // put your main code here, to run repeatedly:
 
-  int currentMillis = millis();
+  unsigned long currentMillis = millis();
 
   if ((currentMillis - previousRG1 > rg1)) //Check RG1
   {

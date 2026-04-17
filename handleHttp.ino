@@ -49,8 +49,8 @@ void handleRoot() {
   server.sendContent(String() + "<tr><td>At Max Heater Temp </td><td>" + String(atMaxHtrTmp) + "</td></tr>");
   server.sendContent(String() + "<tr><td>Heater Dead Band </td><td>" + String(htrDeadBand) + "</td></tr>");
   server.sendContent(String() + "<tr><td> </td><td> </td></tr>");
-  server.sendContent(String() + "<tr><td>High PWM Setting </td><td>" + String(htrPMWhigh) + "</td></tr>");
-  server.sendContent(String() + "<tr><td>Low PWM Setting </td><td>" + String(htrPMWlow) + "</td></tr>");
+  server.sendContent(String() + "<tr><td>High PWM Setting </td><td>" + String(htrPWMhigh) + "</td></tr>");
+  server.sendContent(String() + "<tr><td>Low PWM Setting </td><td>" + String(htrPWMlow) + "</td></tr>");
   
   server.sendContent(
     "</table>"
@@ -117,7 +117,7 @@ void handleWifi() {
   debugln("scan done");
   if (n > 0) {
     for (int i = 0; i < n; i++) {
-      server.sendContent(String() + "\r\n<tr><td>SSID " + WiFi.SSID(i) + String((WiFi.encryptionType(i) == ENC_TYPE_NONE) ? " " : " *") + " (" + WiFi.RSSI(i) + ")</td></tr>");
+      server.sendContent(String() + "\r\n<tr><td>SSID " + WiFi.SSID(i) + String((WiFi.encryptionType(i) == WIFI_AUTH_OPEN) ? " " : " *") + " (" + WiFi.RSSI(i) + ")</td></tr>");
     }
   } else {
     server.sendContent(String() + "<tr><td>No WLAN found</td></tr>");

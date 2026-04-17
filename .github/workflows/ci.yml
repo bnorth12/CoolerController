@@ -1,0 +1,56 @@
+name: Arduino CI
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+    branches: ["**"]
+
+jobs:
+  lint:
+    name: Arduino Lint
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Arduino Lint
+        uses: arduino/arduino-lint-action@v1
+        with:
+          library-manager: false
+          compliance: strict
+
+  compile:
+    name: Compile Sketch
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Arduino CLI
+        uses: arduino/setup-arduino-cli@v2
+
+      - name: Install ESP8266 board support
+        run: |
+          arduino-cli config init
+          arduino-cli config add board_manager.additional_urls \
+            https://arduino.esp8266.com/stable/package_esp8266com_index.json
+          arduino-cli core update-index
+          arduino-cli core install esp8266:esp8266
+
+      - name: Install required libraries
+        run: |
+          arduino-cli lib install "OneWire@2.3.7"
+          arduino-cli lib install "DallasTemperature@3.9.0"
+          arduino-cli lib install "Adafruit MQTT Library@2.5.8"
+
+      - name: Create secrets.h from example
+        run: cp CoolerController/secrets.h.example CoolerController/secrets.h
+
+      - name: Compile sketch
+        run: |
+          arduino-cli compile \
+            --fqbn esp8266:esp8266:generic \
+            CoolerController/CoolerController.ino

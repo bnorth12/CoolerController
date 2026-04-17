@@ -33,6 +33,7 @@ int setTempValues(DeviceAddress deviceAddress) {
   if (tempC == -127.00) // Measurement failed or no device found
   {
     debugln("Temperature Error");
+    return 0; // Return 0 on sensor error to avoid undefined behaviour
   }
   else
   {
@@ -66,7 +67,7 @@ void setHeaterState() {
     defrostCycleOn = true;
   }
   else if (defrostCycleOn && (finTemp >= (fimTmpSetPt + finDeadBand))) {
-    coolCycleOn = false;
+    defrostCycleOn = false; // defrost complete; fins have warmed above threshold
   } //end of defrost cycle evaluation
 
   // Set max heater temp Boolean Variable
@@ -78,22 +79,16 @@ void setHeaterState() {
   } //end of  max heater temp evaluation
 
   // Set Heater PWM
-  if (!coolCycleOn) {
-    htrPWM = htrPMWlow;
-  } // cool cycle is off
-
   if (defrostCycleOn || atMaxHtrTmp) {
-    htrPWM = htrPMWlow;
-  } // heater off due to defrost cycle or max heater temp
-  else if (coolCycleOn) {
-    htrPWM = htrPMWhigh;
-  }
-  else {
-    htrPWM = htrPMWhigh;
+    htrPWM = htrPWMlow;  // heater off due to defrost cycle or max heater temp
+  } else if (coolCycleOn) {
+    htrPWM = htrPWMhigh; // cool cycle active — run heater at high duty cycle
+  } else {
+    htrPWM = htrPWMlow;  // cool cycle inactive — keep heater at low (standby) duty cycle
   } // end of setting heater PWM variables
 
-  analogWrite(htrPin1, htrPWM); // Set PWM output for Heater1
-  analogWrite(htrPin2, htrPWM); // Set PWM output for Heater2
+  analogWrite(HTR_PIN1, htrPWM); // Set PWM output for Heater1
+  analogWrite(HTR_PIN2, htrPWM); // Set PWM output for Heater2
 
 #ifdef DEBUG
 

@@ -1,36 +1,99 @@
-# CoolerController#
-version 0.0.1
+# CoolerController
 
+[![Arduino CI](https://github.com/bnorth12/CoolerController/actions/workflows/ci.yml/badge.svg)](https://github.com/bnorth12/CoolerController/actions/workflows/ci.yml)
 
-# Summary
-- DIY Replacement for Coolbot with HTML based Controll and data published to io.adafruit.com
--
-- When I started looking at options for a walk in cooler on my farm I stumbled across the CoolBot.
-- While CoolBot is an interesting commercial product it is priced rather high for what it is.
-- I them found another DIY project called ColdSnap. I believe the code can be found here on GITHUB.
-- Coldsnap was closer to what I was looking for, but still didn't fit really fit my requirements.
-- I have also started playing with the ESP-8266 ESP-12F recently. This is a low cost WIFI enabled microprocessor.
-- When starting this project I borrowed heavily from the CaptivePortal Advanced Example included with the ESP8266 board definitions.
--
-- The project uses three 18B20 Dallas One Wire Temp Probes to check temperatures for:
-- Cooler Temperature
-- Thermastat Heater Temperature
-- Cooling Fin Temperature
-- The project uses 2 50Ohm power resitors driven by 2 TIP41 Transitors from a 12V power supply.
--
-- The idea of the project is to cool a walk-in cooler using a window unit A/C.
-- To cool the Walk-In to lower temperatures than the window unit A/C norally cools to the two power resitors
-- heat the themastat probe on the A/C to force it to run to a temp controlled by the processor.
-- A temp probe is inserted into the fins to detect if the fins are freezing up.
-- If temperatures below 32 degrees are detected at the fins the thermostat heater shuts off to allow the A/C tp defrost.
--
-- I borrowed the idea for the power resitor heater from the ColdSnap Project, http://people.umass.edu/~dac/projects/ColdSnap/ColdSnap.html
+version 0.1.0
 
+## Summary
 
+DIY replacement for the CoolBot, with an HTML-based control interface and data published to [io.adafruit.com](https://io.adafruit.com) via MQTT.
 
-# To Do List (pull requests are very welcomed)
-- Save settings to eeprom when modified from Cooler Settings page
-- Finish Fritzing Layout
-- 
+When I started looking at options for a walk-in cooler on my farm I came across the CoolBot.
+While CoolBot is an interesting commercial product it is priced rather high for what it is.
+I then found another DIY project called ColdSnap (code on GitHub).
+ColdSnap was closer to what I was looking for, but still didn't quite fit my requirements.
+I have also started playing with the ESP8266 ESP-12F, a low-cost Wi-Fi enabled microprocessor.
+When starting this project I borrowed heavily from the CaptivePortal Advanced Example included with the ESP8266 board definitions.
 
+The project uses three DS18B20 Dallas OneWire temperature probes to measure:
+
+- **Cooler Temperature** — room/box air temperature
+- **Thermostat Heater Temperature** — A/C thermostat probe temperature
+- **Cooling Fin Temperature** — A/C evaporator fin temperature
+
+Two 50 Ω power resistors driven by TIP41 transistors from a 12 V supply act as a heater clamped to
+the A/C thermostat probe. By heating that probe the processor can force the A/C to run to
+temperatures lower than it would normally allow.
+
+A temperature probe inserted into the fins detects if they are freezing up.
+If fin temperature falls below 32 °F the thermostat heater shuts off so the A/C can defrost.
+
+The resistor-heater idea was borrowed from the [ColdSnap project](http://people.umass.edu/~dac/projects/ColdSnap/ColdSnap.html).
+
+---
+
+## Getting Started
+
+### Prerequisites
+
+- [Arduino CLI](https://arduino.github.io/arduino-cli/) **or** Arduino IDE 2.x
+- ESP8266 board support package
+- The three libraries listed in `sketch.yaml` (OneWire, DallasTemperature, Adafruit MQTT Library)
+
+### Configuration
+
+1. **Copy the secrets template and fill in your credentials:**
+
+   ```bash
+   cp secrets.h.example secrets.h
+   ```
+
+   Edit `secrets.h` with your Wi-Fi SSID/password and Adafruit IO username/key.
+   `secrets.h` is listed in `.gitignore` and will **never** be committed.
+
+2. **Update the sensor probe addresses** in `CoolerController.ino` (`rmProbe`, `finProbe`, `htrProbe`)
+   to match your own DS18B20 sensors.
+
+3. **Compile and upload** using the Arduino CLI:
+
+   ```bash
+   arduino-cli compile --fqbn esp8266:esp8266:generic CoolerController/CoolerController.ino
+   arduino-cli upload  --fqbn esp8266:esp8266:generic --port /dev/ttyUSB0 CoolerController/CoolerController.ino
+   ```
+
+   Or open the sketch in Arduino IDE 2.x, select *ESP8266 Generic*, and click **Upload**.
+
+### First Boot
+
+1. Connect to the `ESP_ap` Wi-Fi network (password: `12345678`).
+2. Navigate to `http://192.168.4.1/wifi` and enter your home Wi-Fi credentials.
+3. The ESP8266 will connect and be reachable at its assigned IP address or `http://esp8266.local`.
+4. Visit `http://esp8266.local/` to see current temperatures and state.
+5. Visit `http://esp8266.local/para` to adjust set points and dead bands (values persist across reboots).
+
+---
+
+## Hardware
+
+See the wiring diagram in the `Fritzing/` folder.
+
+| Component | Details |
+|---|---|
+| Microcontroller | ESP8266 ESP-12F |
+| Temperature sensors | DS18B20 OneWire (×3) |
+| Heater resistors | 50 Ω power resistors (×2) |
+| Heater drivers | TIP41 NPN transistors (×2) |
+| Supply | 12 V DC |
+
+---
+
+## Known Issues / To Do
+
+- [ ] Finish Fritzing layout
+- [ ] Test heater logic end-to-end with real hardware
+- [ ] Tune `htrPWMhigh` and `htrPWMlow` PWM values for optimal heater performance
+- [ ] Change 30-second MQTT interval back to 5 minutes (`rgFiveMin = 300000`) for production use
+- [ ] Add door-sensor support (pin defined but not yet wired into control logic)
+
+Pull requests are very welcome!
 
