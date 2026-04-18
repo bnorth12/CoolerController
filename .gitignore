@@ -1,0 +1,21 @@
+# Credentials — never commit real values
+secrets.h
+
+# Arduino IDE / arduino-cli build artifacts
+build/
+*.bin
+*.elf
+*.hex
+*.map
+
+# Arduino IDE 2.x cache
+.arduino15/
+
+# VS Code
+.vscode/
+
+# macOS metadata
+.DS_Store
+
+# Windows thumbnails
+Thumbs.db

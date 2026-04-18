@@ -1,0 +1,13 @@
+# arduino-cli sketch manifest
+# Pinned library versions ensure reproducible builds for contributors and CI.
+# Run `arduino-cli lib install` to install these, or let the CI workflow handle it.
+
+defaultFqbn: esp8266:esp8266:generic
+
+dependencies:
+  - name: OneWire
+    version: 2.3.7
+  - name: DallasTemperature
+    version: 3.9.0
+  - name: Adafruit MQTT Library
+    version: 2.5.8

@@ -27,9 +27,9 @@ void handleParameters() {
   server.sendContent("<br />Heater Dead Band betwen 1 and 4");
   server.sendContent(String() + "<br /><input type='number' name='hdb' value='" + htrDeadBand + "' step='1' min='1' max='4'>");
   server.sendContent("<br />Heater Low PWM set between 1 and 75");
-  server.sendContent(String() + "<br /><input type='number' name='lpwm' value='" + htrPMWlow + "' step='1' min='1' max='75'>");
+  server.sendContent(String() + "<br /><input type='number' name='lpwm' value='" + htrPWMlow + "' step='1' min='1' max='75'>");
   server.sendContent("<br />Heater High PWM set between 75 and 250");
-  server.sendContent(String() + "<br /><input type='number' name='hpwm' value='" + htrPMWhigh + "' step='1' min='75' max='250'>");
+  server.sendContent(String() + "<br /><input type='number' name='hpwm' value='" + htrPWMhigh + "' step='1' min='75' max='250'>");
   server.sendContent("<br />");
   server.sendContent("<br />");
   server.sendContent("<input type='submit' value='Save Settings'/>");
@@ -50,8 +50,8 @@ void handleParaSave() {
   finDeadBand = server.arg("fdb").toInt();
   rmDeadBand = server.arg("cdb").toInt();
   htrDeadBand = server.arg("hdb").toInt();
-  htrPMWlow = server.arg("lpwm").toInt();
-  htrPMWhigh = server.arg("hpwm").toInt();
+  htrPWMlow = server.arg("lpwm").toInt();
+  htrPWMhigh = server.arg("hpwm").toInt();
 
   server.sendHeader("Location", "para", true);
   server.sendHeader("Cache-Control", "no-cache, no-store, must-revalidate");

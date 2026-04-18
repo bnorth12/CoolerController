@@ -1,7 +1,9 @@
 void timing() {
-  // put your main code here, to run repeatedly:
 
-  int currentMillis = millis();
+  unsigned long currentMillis = millis();
+  // Note: previousRG1 and previousRGFiveMin are initialised to 0 so both rate
+  // groups fire immediately on the first call to timing(), which is the desired
+  // behaviour (take temperature readings as soon as the device boots).
 
   if ((currentMillis - previousRG1 > rg1)) //Check RG1
   {
